@@ -429,3 +429,43 @@ http_archive(
         "https://storage.googleapis.com/public-bazel-artifacts/java/railroad/rr-1.63-java8.zip",
     ],
 )
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+#http_archive(
+#    name = "bazel_toolchains",
+#    sha256 = "1adf7a8e9901287c644dcf9ca08dd8d67a69df94bedbd57a841490a84dc1e9ed",
+#    strip_prefix = "bazel-toolchains-5.0.0",
+#    urls = [
+#        "https://github.com/bazelbuild/bazel-toolchains/archive/refs/tags/v5.0.0.tar.gz",
+#        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.5.0/bazel-toolchains-3.5.0.tar.gz",
+#        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/releases/download/3.5.0/bazel-toolchains-3.5.0.tar.gz",
+#    ],
+#)
+
+http_archive(
+    name = "bazel_toolchains",
+    sha256 = "89a053218639b1c5e3589a859bb310e0a402dedbe4ee369560e66026ae5ef1f2",
+    strip_prefix = "bazel-toolchains-3.5.0",
+    urls = [
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.5.0/bazel-toolchains-3.5.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/releases/download/3.5.0/bazel-toolchains-3.5.0.tar.gz",
+    ],
+)
+
+load("@bazel_toolchains//rules:rbe_repo.bzl", "rbe_autoconfig")
+load("@bazel_toolchains//rules/exec_properties:exec_properties.bzl", "create_rbe_exec_properties_dict")
+
+# For now, we use a simple Docker image provided by the Bazel project which
+# supports C/C++, Java, and Python. The downside of this image compared to the
+# RBE images is that it does not come with configs, so the first build can take
+# about a minute to generate them.
+rbe_autoconfig(
+    name = "engflow_remote_config",
+    digest = "sha256:d39143efe9e84530ce5c1961d14d69efcb42fbb9ac14ff21e1c82013b58039a7",
+    java_home = "/usr/lib/jvm/java-8-openjdk-amd64/",
+#    java_version = "8",
+    registry = "docker.io",
+    repository = "cockroachdb/bazel",
+    use_legacy_platform_definition = False,
+)
