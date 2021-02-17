@@ -117,6 +117,7 @@ genrule(
         "rule_name.go",
         ":gen-rulenames",
     ],
+    tags = ["no-remote"],
     outs = ["rule_name_string.go"],
     # golang.org/x/tools executes commands via
     # golang.org/x/sys/execabs which requires all PATH lookups to

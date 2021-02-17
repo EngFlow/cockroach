@@ -66,6 +66,7 @@ genrule(
         "encoding.go",
     ],
     outs = ["type_string.go"],
+    tags = ["no-remote"],
     # golang.org/x/tools executes commands via
     # golang.org/x/sys/execabs which requires all PATH lookups to
     # result in absolute paths. To account for this, we resolve the
@@ -85,7 +86,7 @@ genrule(
        GO_ABS_PATH=`cd $$GO_REL_PATH && pwd`
        # Set GOPATH to something to workaround https://github.com/golang/go/issues/43938
        sed -e 's/type Type encodingtype.T/type Type int/' $(location encoding.go) > encoding_tmp.go && \
-       env PATH=$$GO_ABS_PATH HOME=$(GENDIR) GOPATH=/nonexist-gopath \
+       env PATH=$$GO_ABS_PATH HOME=$(GENDIR) GOPATH=/nonexist-gopath GOROOT=/usr/lib/go \
          $(location @com_github_cockroachdb_tools//cmd/stringer:stringer) -output=$@ -type=Type encoding_tmp.go
     """,
     exec_tools = [
